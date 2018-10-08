@@ -4,7 +4,7 @@ import re
 import ipykernel
 import requests
 from notebook.notebookapp import list_running_servers
-from urllib.parse import urljoin
+from urlparse import urljoin
 
 def get_notebook_name():
     """
