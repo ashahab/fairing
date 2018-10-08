@@ -1,6 +1,7 @@
 from fairing.architectures.kubeflow.basic import BasicArchitecture
 from fairing.backend.kubeflow import KubeflowBackend
-
+import logging
+logger = logging.getLogger(__name__)
 
 class CMTraining(BasicArchitecture):
     def __init__(self, ps_count, worker_count):
@@ -65,7 +66,7 @@ class CMTraining(BasicArchitecture):
             })
 
         svc["tfJobs"] = tfjobs
-
+        logger.info("Svc '%s'".format(svc))
         return svc
 
     def get_associated_backend(self):

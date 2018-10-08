@@ -13,7 +13,7 @@ from fairing.strategies.basic import BasicTrainingStrategy
 from fairing.metaparticle import MetaparticleClient
 from fairing.utils import get_unique_tag
 
-logger = logging.getLogger('fairing')
+logger = logging.getLogger(__name__)
 
 class Trainer(object):
     def __init__(self,
@@ -64,6 +64,7 @@ class Trainer(object):
         
         ast, env = self.strategy.add_training(
             ast, self.repository, self.image_name, self.image_tag, volumes, volume_mounts)
+        logger.warn("Compiled ast '%s'.", ast)
         return ast, env
 
     def get_metaparticle_client(self):
