@@ -18,7 +18,7 @@ setuptools.setup(
     ),
     install_requires=[
         'redis==2.10.6',
-        'notebook==5.6.0'
+        'notebook==5.6.0',
         'kubernetes==6.0.0'
     ],
     extras_require={
