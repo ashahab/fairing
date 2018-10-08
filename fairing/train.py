@@ -79,7 +79,7 @@ class Trainer(object):
     def deploy_training(self, stream_logs=True):
         self.fill_image_name_and_tag()
         ast, env = self.compile_ast()
-
+        # image build
         self.builder.execute(self.repository,
                              self.image_name,
                              self.image_tag,

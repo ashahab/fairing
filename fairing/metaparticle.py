@@ -73,11 +73,12 @@ def update_metaparticle():
                                      stat.S_IROTH)
     logger.warn('Metaparticle compiler succesfully installed.')
 
+
 def ensure_metaparticle_present():
     install_path = get_mp_bin_path()
     if os.path.exists(install_path):
         return
-    update_metaparticle()
+    # update_metaparticle()
 
 
 ensure_metaparticle_present()
