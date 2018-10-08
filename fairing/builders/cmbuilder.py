@@ -4,7 +4,7 @@ import logging
 
 from fairing.builders.dockerfile import DockerFile
 from fairing.builders.container_image_builder import ContainerImageBuilder
-from fairing.notebook_helper import get_notebook_name, is_in_notebook
+from fairing.notebook_helper import get_notebook_name
 
 logger = logging.getLogger('fairing')
 
@@ -34,5 +34,3 @@ class CmBuilder(ContainerImageBuilder):
             raise Exception("Could not assing podCIDR '%s' stdout: '%s', stderr: '%s'",
                             cmd,
                             stdout, stderr)
-
-
