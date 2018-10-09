@@ -6,7 +6,7 @@ from fairing.builders.dockerfile import DockerFile
 from fairing.builders.container_image_builder import ContainerImageBuilder
 from fairing.notebook_helper import get_notebook_name
 
-logger = logging.getLogger('fairing')
+logger = logging.getLogger(__name__)
 
 
 class CmBuilder(ContainerImageBuilder):

@@ -120,6 +120,7 @@ class Train(object):
                  builder=None):
 
         logger.setLevel(logging.DEBUG)
+        logger.info("Starting training!!!")
         self.trainer = Trainer(repository=repository,
                                image_name=image_name,
                                image_tag=image_tag,
@@ -143,7 +144,7 @@ class Train(object):
                 # code to go from local to remote execution.
                 # That way, by simply commenting or uncommenting the Train decorator
                 # Model.train() will execute either on the local setup or in kubernetes
-
+                logger.info("Inside user class")
                 if attribute_name != 'train' or user_class.is_training_initialized:
                     return super(UserClass, user_class).__getattribute__(attribute_name)
 
