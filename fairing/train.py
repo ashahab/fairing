@@ -122,7 +122,6 @@ class Train(object):
                  builder=None):
 
         logger.setLevel(logging.DEBUG)
-        logger.info("Starting training!!!")
         self.trainer = Trainer(repository=repository,
                                image_name=image_name,
                                image_tag=image_tag,
@@ -135,12 +134,12 @@ class Train(object):
                                builder=builder)
 
     def __call__(self, cls):
+        # deploy training
         class UserClass(cls):
             # self refers to the Train instance
             # user_class is equivalentto self in the UserClass instance
             def __init__(user_class):
                 user_class.is_training_initialized = False
-                logger.info("init user class")
 
             def __getattribute__(user_class, attribute_name):
                 # Overriding train in order to minimize the changes necessary in the user
