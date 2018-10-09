@@ -78,6 +78,7 @@ class Trainer(object):
             self.repository, self.image_name, self.image_tag)
 
     def deploy_training(self, stream_logs=True):
+        logger.info("Deploying")
         self.fill_image_name_and_tag()
         ast, env = self.compile_ast()
         # image build
@@ -103,6 +104,7 @@ class Trainer(object):
             self.backend.stream_logs(self.image_name, self.image_tag)
 
     def start_training(self, user_class):
+        logger.warn("Starting user code!!!")
         self.strategy.exec_user_code(user_class)
 
 
@@ -138,6 +140,7 @@ class Train(object):
             # user_class is equivalentto self in the UserClass instance
             def __init__(user_class):
                 user_class.is_training_initialized = False
+                logger.info("init user class")
 
             def __getattribute__(user_class, attribute_name):
                 # Overriding train in order to minimize the changes necessary in the user
