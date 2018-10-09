@@ -17,11 +17,11 @@ class BasicTrainingStrategy(object):
   def get_params(self):
     return {}
   
-  def exec_user_code(self, user_object):
-    logger.warn("execing user code")
+  def exec_user_code(self, user_object, *args, **kwargs):
+    logger.warn("execing user code with args {}", str(*args))
     if 'build' in dir(user_object) and callable(getattr(user_object, 'build')):
       user_object.build()
-    user_object.train()
+    user_object.train(*args, **kwargs)
   
   def set_architecture(self, arch):
     self.arch = arch

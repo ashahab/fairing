@@ -103,9 +103,9 @@ class Trainer(object):
         if stream_logs:
             self.backend.stream_logs(self.image_name, self.image_tag)
 
-    def start_training(self, user_class):
+    def start_training(self, user_class, *args, **kwargs):
         logger.warn("Starting user code!!!")
-        self.strategy.exec_user_code(user_class)
+        self.strategy.exec_user_code(user_class, *args, **kwargs)
 
 
 class Train(object):
@@ -141,20 +141,20 @@ class Train(object):
             def __init__(user_class):
                 user_class.is_training_initialized = False
 
-            def __getattribute__(user_class, attribute_name):
+            def __getattribute__(user_class, attribute_name, *args, **kwargs):
                 # Overriding train in order to minimize the changes necessary in the user
                 # code to go from local to remote execution.
                 # That way, by simply commenting or uncommenting the Train decorator
                 # Model.train() will execute either on the local setup or in kubernetes
                 logger.info("Inside user class")
                 if attribute_name != 'train' or user_class.is_training_initialized:
-                    return super(UserClass, user_class).__getattribute__(attribute_name)
+                    return super(UserClass, user_class).__getattribute__(attribute_name, *args, **kwargs)
 
                 if attribute_name == 'train' and not is_runtime_phase():
                     return super(UserClass, user_class).__getattribute__('_deploy_training')
 
                 user_class.is_training_initialized = True
-                self.trainer.start_training(user_class)
+                self.trainer.start_training(user_class, *args, **kwargs)
                 return super(UserClass, user_class).__getattribute__('_noop_attribute')
 
             def _noop_attribute(user_class):
