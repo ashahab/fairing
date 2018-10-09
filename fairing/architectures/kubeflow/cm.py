@@ -13,7 +13,7 @@ class CMTraining(BasicArchitecture):
 
     def add_jobs(self, svc, count, repository, img, name, volumes, volume_mounts):
         nb_name = get_notebook_name()
-        cmd = "jupyter nbconvert --to script /app/{} --output /tmp/code.py".format(nb_name).split()
+        cmd = "jupyter nbconvert --to script {} --output /tmp/code.py".format(nb_name).split()
         p = subprocess.Popen(cmd, env=os.environ)
         stdout, stderr = p.communicate()
         logger.info('Stdout: {}, stderr: {}, return_code'.format(stdout, stderr, p.returncode))
