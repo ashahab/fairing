@@ -44,12 +44,12 @@ class MetaparticleClient(object):
         with open('.metaparticle/spec.json', 'w') as out:
             json.dump(svc, out)
         logger.info("Launching metaparticle")
-        subprocess.check_call([get_mp_bin_path(), '-f', '.metaparticle/spec.json'])
+        subprocess.check_call(["/usr/local/bin/mp-compiler", '-f', '.metaparticle/spec.json'])
 
     def cancel(self, name):
         subprocess.check_call(
-            [get_mp_bin_path(), '-f', '.metaparticle/spec.json', '--delete'])
+            ["/usr/local/bin/mp-compiler", '-f', '.metaparticle/spec.json', '--delete'])
 
     def logs(self, name):
         subprocess.check_call(
-            [get_mp_bin_path(), '-f', '.metaparticle/spec.json', '--deploy=false', '--attach=true'])
+            ["/usr/local/bin/mp-compiler", '-f', '.metaparticle/spec.json', '--deploy=false', '--attach=true'])
