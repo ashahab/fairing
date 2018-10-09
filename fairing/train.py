@@ -148,7 +148,7 @@ class Train(object):
                 # Model.train() will execute either on the local setup or in kubernetes
                 logger.info("Inside user class")
                 if attribute_name != 'train' or user_class.is_training_initialized:
-                    return super(UserClass, user_class).__getattribute__(attribute_name, *args, **kwargs)
+                    return super(UserClass, user_class).__getattribute__(attribute_name)
 
                 if attribute_name == 'train' and not is_runtime_phase():
                     return super(UserClass, user_class).__getattribute__('_deploy_training')
@@ -160,7 +160,7 @@ class Train(object):
             def _noop_attribute(user_class):
                 pass
 
-            def _deploy_training(user_class):
+            def _deploy_training(user_class, *args, **kwargs):
                 self.trainer.deploy_training()
 
         return UserClass
