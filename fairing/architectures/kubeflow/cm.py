@@ -18,7 +18,7 @@ class CMTraining(BasicArchitecture):
         stdout, stderr = p.communicate()
         logger.info('Stdout: {}, stderr: {}, return_code'.format(stdout, stderr, p.returncode))
         if p.returncode:
-            raise Exception("Could not assing podCIDR '%s' stdout: '%s', stderr: '%s'",
+            raise Exception("Could not convert '%s' stdout: '%s', stderr: '%s'",
                             cmd,
                             stdout, stderr)
         tfjobs = []

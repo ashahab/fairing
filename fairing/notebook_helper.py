@@ -19,9 +19,9 @@ def get_notebook_name():
         for nn in json.loads(response.text):
             if nn['kernel']['id'] == kernel_id:
                 full_path = nn['notebook']['path']
-                return os.path.basename(full_path)
+                return full_path
     
-    return f
+    return None
 
 def is_in_notebook():
     try:
