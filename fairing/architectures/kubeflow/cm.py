@@ -14,13 +14,7 @@ class CMTraining(BasicArchitecture):
     def add_jobs(self, svc, count, repository, img, name, volumes, volume_mounts):
         nb_name = get_notebook_name()
         cmd = "jupyter nbconvert --to script {} --output /tmp/code".format(nb_name).split()
-        p = subprocess.Popen(cmd, env=os.environ, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        stdout, stderr = p.communicate(timeout=600)
-        logger.info('Stdout: {}, stderr: {}, return_code'.format(stdout, stderr, p.returncode))
-        if p.returncode:
-            raise Exception("Could not convert '%s' stdout: '%s', stderr: '%s'",
-                            cmd,
-                            stdout, stderr)
+        subprocess.check_call(cmd)
         tfjobs = []
         # append configmap to volume and volumeMounts
         with open('/tmp/code.py') as f:
