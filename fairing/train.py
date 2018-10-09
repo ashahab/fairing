@@ -119,6 +119,7 @@ class Train(object):
                  strategy=BasicTrainingStrategy(),
                  builder=None):
 
+        logger.setLevel(logging.DEBUG)
         self.trainer = Trainer(repository=repository,
                                image_name=image_name,
                                image_tag=image_tag,
