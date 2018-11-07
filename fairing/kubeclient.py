@@ -78,7 +78,7 @@ class KubeClient(object):
                         tail = v1.read_namespaced_pod_log(name, namespace, follow=True, _preload_content=False)
                 break
             except ValueError as v:
-                logger.error("error getting status for {} {}".format(name, str(e)))
+                logger.error("error getting status for {} {}".format(name, str(v)))
             except ApiException as e:
                 logger.error("error getting status for {} {}".format(name, str(e)))
                 retries -= 1
