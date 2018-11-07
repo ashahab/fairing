@@ -40,7 +40,7 @@ class KubeClient(object):
         api_response = v1.read_namespaced_config_map(name=svc['configMap']['metadata']['name'],
                                                      namespace=svc['namespace'],
                                                      pretty='true')
-        logger.info("Created configmap '%s'", api_response)
+        logger.debug("Created configmap '%s'", api_response)
         api_instance = kube_client.CustomObjectsApi()
         group = 'kubeflow.org'  # str | The custom resource's group name
         version = 'v1alpha2'  # str | The custom resource's version
@@ -72,9 +72,9 @@ class KubeClient(object):
         while retries > 0:
             try:
                 w = watch.Watch()
-                for event in w.stream(ev.list_namespaced_event, namespace=namespace, field_selector="involvedObject.name={}".format(name)):
+                for event in w.stream(ev.list_namespaced_event, namespace=namespace):
                     logger.info("Event: %s %s", event['type'], event['reason'])
-                    if event['type'] == 'Normal' and event['reason'] == 'Started':
+                    if event['type'] == 'Normal' and event['reason'] == 'Started' and event['involvedObject']['name'] == name:
                         tail = v1.read_namespaced_pod_log(name, namespace, follow=True, _preload_content=False)
                 break
             except ApiException as e:
