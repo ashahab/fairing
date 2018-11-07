@@ -77,6 +77,8 @@ class KubeClient(object):
                     if event['type'] == 'Normal' and event['reason'] == 'Started' and event['involvedObject']['name'] == name:
                         tail = v1.read_namespaced_pod_log(name, namespace, follow=True, _preload_content=False)
                 break
+            except ValueError as v:
+                logger.error("error getting status for {} {}".format(name, str(e)))
             except ApiException as e:
                 logger.error("error getting status for {} {}".format(name, str(e)))
                 retries -= 1
