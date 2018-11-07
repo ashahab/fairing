@@ -65,16 +65,15 @@ class KubeClient(object):
     def logs(self, name, namespace):
         tail = None
         v1 = kube_client.CoreV1Api()
-        ev = kube_client.EventsV1beta1Api()
         # Retry to allow starting of pod
         # TODO Use urllib3's retry
         retries = MAX_RETRIES
         while retries > 0:
             try:
                 w = watch.Watch()
-                for event in w.stream(ev.list_namespaced_event, namespace=namespace):
-                    logger.info("Event: %s %s", event['type'], event['reason'])
-                    if event['type'] == 'Normal' and event['reason'] == 'Started' and event['involvedObject']['name'] == name:
+                for event in w.stream(v1.list_namespaced_pod, namespace=namespace, field_selector="metadata.name={}".format(name)):
+                    logger.info("Event: %s %s %s", event['type'], event['object'].metadata.name, json.dumps(event['object']['status']))
+                    if event['object']['status']['phase'] == 'Running':
                         tail = v1.read_namespaced_pod_log(name, namespace, follow=True, _preload_content=False)
                 break
             except ValueError as v:
