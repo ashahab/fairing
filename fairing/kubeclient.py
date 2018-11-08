@@ -67,21 +67,25 @@ class KubeClient(object):
         v1 = kube_client.CoreV1Api()
         # Retry to allow starting of pod
         # TODO Use urllib3's retry
-        retries = MAX_RETRIES
-        while retries > 0:
-            try:
-                w = watch.Watch()
-                for event in w.stream(v1.list_namespaced_pod, namespace=namespace, field_selector="metadata.name={}".format(name)):
-                    logger.info("Event: %s %s %s", event['type'], event['object'].metadata.name, json.dumps(event['object']['status']))
-                    if event['object']['status']['phase'] == 'Running':
-                        tail = v1.read_namespaced_pod_log(name, namespace, follow=True, _preload_content=False)
-                break
-            except ValueError as v:
-                logger.error("error getting status for {} {}".format(name, str(v)))
-            except ApiException as e:
-                logger.error("error getting status for {} {}".format(name, str(e)))
-                retries -= 1
-                time.sleep(MAX_SLEEP_SECONDS)
+        try:
+            w = watch.Watch()
+            for event in w.stream(v1.list_namespaced_pod, namespace=namespace, field_selector="metadata.name={}".format(name)):
+                logger.info("Event: %s %s %s", event['type'], event['object'].metadata.name,  event['object'].status.phase)
+                if event['object'].status.phase == 'Pending':
+                    continue
+                elif event['object'].status.phase == 'Running' and event['object'].status.container_statuses[0].ready:
+                    logger.info("Pod started running %s", event['object'].status.container_statuses[0].ready)
+                    tail = v1.read_namespaced_pod_log(name, namespace, follow=True, _preload_content=False)
+                    break
+                elif event['type'] == 'DELETED' or event['object'].status.phase == 'Failed' or event['object'].status.container_statuses[0].state.waiting:
+                    logger.error("Failed to launch %s, reason: %s",  event['object'].metadata.name, event['object'].status.container_statuses[0].state.waiting.reason)
+                    tail = v1.read_namespaced_pod_log(name, namespace, follow=True, _preload_content=False)
+                    break
+        except ValueError as v:
+            logger.error("error getting status for {} {}".format(name, str(v)))
+        except ApiException as e:
+            logger.error("error getting status for {} {}".format(name, str(e)))
+
         if tail:
             try:
                 for chunk in tail.stream(MAX_STREAM_BYTES):
